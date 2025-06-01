@@ -95,7 +95,7 @@ class MonthlySavingStats extends BaseWidget
                 ->description('Members who have promised to pay')
                 ->descriptionIcon('heroicon-m-hand-raised')
                 ->color('warning'),
-            Stat::make('Collection Rate', number_format(($paidMembers / $totalMembers) * 100, 1) . '%')
+            Stat::make('Collection Rate', $totalMembers > 0 ? number_format(($paidMembers / $totalMembers) * 100, 1) . '%' : '0%')
                 ->description('Percentage of members who have paid')
                 ->descriptionIcon('heroicon-m-chart-bar')
                 ->color('warning'),
