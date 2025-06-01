@@ -57,7 +57,7 @@ class RolePermissionSeeder extends Seeder
         }
 
         // Assign admin role to the admin user
-        $adminUser = User::where('email', 'admin@nativedetail.com')->first();
+        $adminUser = User::where('email', 'admin@mcc.vktools.in')->first();
         $adminRole = Role::where('name', 'admin')->first();
         $adminUser->assignRole($adminRole);
     }

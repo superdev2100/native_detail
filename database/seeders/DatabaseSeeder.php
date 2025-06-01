@@ -18,10 +18,10 @@ class DatabaseSeeder extends Seeder
 
         // Create or update admin user
         User::updateOrCreate(
-            ['email' => 'admin@example.com'],
+            ['email' => 'admin@mcc.vktools.in'],
             [
                 'name' => 'Admin User',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('vj@12345'),
                 'email_verified_at' => now(),
             ]
         );
@@ -29,7 +29,8 @@ class DatabaseSeeder extends Seeder
         // Run seeders in correct order
         $this->call([
             RolePermissionSeeder::class,
-            VillagePeopleSeeder::class,
+            MonthlySavingSchemeSeeder::class,
+            // VillagePeopleSeeder::class,
             SkillSeeder::class,
         ]);
     }
