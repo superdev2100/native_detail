@@ -17,35 +17,37 @@ class FinanceSummary extends BaseWidget
         // Debug: Log the filters
         \Log::info('Current Filters:', $filters);
 
-        // Build the query based on the filters
-        $query = FinanceTransaction::query();
+        // Create base query with common filters
+        $baseQuery = FinanceTransaction::query();
 
-        // Apply filters if they exist
-        if (isset($filters['type'])) {
-            $query->where('type', $filters['type']);
-        }
+        // Apply common filters if they exist
         if (isset($filters['category'])) {
-            $query->where('category_id', $filters['category']);
+            $baseQuery->where('category_id', $filters['category']);
         }
         if (isset($filters['payment_method'])) {
-            $query->where('payment_method', $filters['payment_method']);
+            $baseQuery->where('payment_method', $filters['payment_method']);
         }
         if (isset($filters['member'])) {
-            $query->where('member_id', $filters['member']);
+            $baseQuery->where('member_id', $filters['member']);
         }
         if (isset($filters['tags'])) {
-            $query->whereHas('tags', function ($query) use ($filters) {
+            $baseQuery->whereHas('tags', function ($query) use ($filters) {
                 $query->whereIn('id', $filters['tags']);
             });
         }
 
-        // Debug: Log the query
-        \Log::info('Query:', ['sql' => $query->toSql(), 'bindings' => $query->getBindings()]);
+        // Create separate queries for income and expenses
+        $incomeQuery = clone $baseQuery;
+        $expenseQuery = clone $baseQuery;
 
-        // Calculate totals based on the filtered query
-        $totalIncome = $query->where('type', 'income')->where('status', true)->sum('amount');
-        $totalExpense = $query->where('type', 'expense')->sum('amount');
+        // Calculate totals based on the filtered queries
+        $totalIncome = $incomeQuery->where('type', 'income')->where('status', true)->sum('amount');
+        $totalExpense = $expenseQuery->where('type', 'expense')->where('status', true)->sum('amount');
         $balance = $totalIncome - $totalExpense;
+
+        // Debug: Log the queries
+        \Log::info('Income Query:', ['sql' => $incomeQuery->toSql(), 'bindings' => $incomeQuery->getBindings()]);
+        \Log::info('Expense Query:', ['sql' => $expenseQuery->toSql(), 'bindings' => $expenseQuery->getBindings()]);
 
         return [
             Stat::make('Total Income', '₹' . number_format($totalIncome, 2))
@@ -65,10 +67,10 @@ class FinanceSummary extends BaseWidget
         ];
     }
 
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()
-            // ->where('id', '!=', 1) // Exclude admin user
-            ->where('status', true); // Exclude records where status is false
-    }
+    // public static function getEloquentQuery(): Builder
+    // {
+    //     return parent::getEloquentQuery()
+    //         // ->where('id', '!=', 1) // Exclude admin user
+    //         ->where('status', true); // Exclude records where status is false
+    // }
 }
