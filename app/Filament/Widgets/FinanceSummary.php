@@ -44,7 +44,7 @@ class FinanceSummary extends BaseWidget
 
         // Calculate totals based on the filtered query
         $totalIncome = $query->where('type', 'income')->where('status', true)->sum('amount');
-        $totalExpense = $query->where('type', 'expense')->where('status', false)->sum('amount');
+        $totalExpense = $query->where('type', 'expense')->sum('amount');
         $balance = $totalIncome - $totalExpense;
 
         return [
