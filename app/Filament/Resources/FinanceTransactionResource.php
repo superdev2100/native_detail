@@ -114,11 +114,7 @@ class FinanceTransactionResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('member.name')
                     ->label('Member')
-                    ->searchable()
-                    ->visible(fn ($record) =>
-                        $record &&
-                        $record->type === 'income'
-                    ),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('date')
                     ->date()
                     ->sortable(),
