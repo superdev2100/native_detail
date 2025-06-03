@@ -67,8 +67,8 @@ class FinanceTransactionResource extends Resource
                                     ->required()
                                     ->default('#6B7280'),
                             ])
-                            ->badge()
-                            ->color(fn ($state) => $state?->color ?? '#6B7280')
+                            // ->badge()
+                            // ->color(fn ($state) => $state?->color ?? '#6B7280')
                             ->columnSpanFull(),
                         Forms\Components\Textarea::make('description')
                             ->maxLength(65535)
