@@ -160,6 +160,11 @@ class UserResource extends Resource
                         Forms\Components\DatePicker::make('last_payment_date')
                             ->visible(fn (Forms\Get $get) => $get('is_monthly_saving_scheme_member')),
                     ])->columns(3),
+
+                Forms\Components\Toggle::make('status')
+                    ->label('Active')
+                    ->default(false)
+                    ->helperText('Toggle to set the user as active or inactive'),
             ]);
     }
 
@@ -196,8 +201,7 @@ class UserResource extends Resource
                     ->options([
                         true => 'Members',
                         false => 'Non-members',
-                    ])
-                    ->default(false),
+                    ]),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -255,7 +259,9 @@ class UserResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('id', '!=', 1); // Exclude admin user
+        return parent::getEloquentQuery()
+            ->where('id', '!=', 1) // Exclude admin user
+            ->where('status', true); // Exclude records where status is false
     }
 
     protected function mutateFormDataBeforeSave(array $data): array

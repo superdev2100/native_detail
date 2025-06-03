@@ -12,6 +12,8 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Widgets\StatsOverviewWidget\Card;
+use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class FinanceTransactionResource extends Resource
 {
@@ -198,6 +200,48 @@ class FinanceTransactionResource extends Resource
             'index' => Pages\ListFinanceTransactions::route('/'),
             'create' => Pages\CreateFinanceTransaction::route('/create'),
             'edit' => Pages\EditFinanceTransaction::route('/{record}/edit'),
+        ];
+    }
+
+    protected function getStats(): array
+    {
+        // Get the current filter state
+        $filters = request()->get('filters', []);
+
+        // Debug: Log the filters
+        \Log::info('Current Filters:', $filters);
+
+        // Build the query based on the filters
+        $query = FinanceTransaction::query();
+
+        // Apply filters if they exist
+        if (isset($filters['type'])) {
+            $query->where('type', $filters['type']);
+        }
+
+        // Debug: Log the query
+        \Log::info('Query:', ['sql' => $query->toSql(), 'bindings' => $query->getBindings()]);
+
+        // Calculate totals based on the filtered query
+        $totalIncome = $query->where('type', 'income')->where('status', true)->sum('amount');
+        $totalExpense = $query->where('type', 'expense')->where('status', true)->sum('amount');
+        $balance = $totalIncome - $totalExpense;
+
+        return [
+            Stat::make('Total Income', '₹' . number_format($totalIncome, 2))
+                ->description('All income transactions')
+                ->descriptionIcon('heroicon-m-arrow-trending-up')
+                ->color('success'),
+
+            Stat::make('Total Expense', '₹' . number_format($totalExpense, 2))
+                ->description('All expense transactions')
+                ->descriptionIcon('heroicon-m-arrow-trending-down')
+                ->color('danger'),
+
+            Stat::make('Balance', '₹' . number_format($balance, 2))
+                ->description('Current balance')
+                ->descriptionIcon('heroicon-m-banknotes')
+                ->color($balance >= 0 ? 'success' : 'danger'),
         ];
     }
 }
