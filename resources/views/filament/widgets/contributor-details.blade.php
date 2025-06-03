@@ -1,4 +1,8 @@
 <div class="space-y-4">
+    <div class="text-lg font-medium text-gray-900 mb-4">
+        Data for {{ $month }}
+    </div>
+
     {{-- Categories Table --}}
     <div class="overflow-x-auto">
         <table class="w-full text-sm text-left text-gray-500">
