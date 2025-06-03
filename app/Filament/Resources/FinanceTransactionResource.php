@@ -112,6 +112,13 @@ class FinanceTransactionResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('member.name')
+                    ->label('Member')
+                    ->searchable()
+                    ->visible(fn ($record) =>
+                        $record &&
+                        $record->type === 'income'
+                    ),
                 Tables\Columns\TextColumn::make('date')
                     ->date()
                     ->sortable(),
@@ -135,13 +142,6 @@ class FinanceTransactionResource extends Resource
                     }),
                 Tables\Columns\TextColumn::make('category.name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('member.name')
-                    ->label('Member')
-                    ->searchable()
-                    ->visible(fn ($record) =>
-                        $record &&
-                        $record->type === 'income'
-                    ),
                 Tables\Columns\TextColumn::make('payment_method')
                     ->badge(),
                 Tables\Columns\TextColumn::make('user.name')

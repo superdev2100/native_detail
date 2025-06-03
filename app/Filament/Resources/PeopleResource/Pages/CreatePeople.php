@@ -14,4 +14,9 @@ class CreatePeople extends CreateRecord
         $data['password'] = bcrypt('admin@123');
         return $data;
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
