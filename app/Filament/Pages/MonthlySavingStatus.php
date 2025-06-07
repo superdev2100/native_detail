@@ -289,6 +289,7 @@ class MonthlySavingStatus extends Page implements HasForms, HasTable
                             $transaction->update([
                                 'status' => true,
                                 'date' => now(),
+                                'line_status' => 'completed'
                             ]);
 
                             Notification::make()

@@ -88,3 +88,4 @@ class IncomeCategoryChart extends ChartWidget
         ];
     }
 }
+ 

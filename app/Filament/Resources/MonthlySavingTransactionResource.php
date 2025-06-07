@@ -52,7 +52,12 @@ class MonthlySavingTransactionResource extends Resource
                             ->label('Expected Payment Date')
                             ->helperText('When the member says they will make the payment')
                             ->nullable()
-                            ->live(),
+                            ->live()
+                            ->afterStateUpdated(function ($state, Forms\Set $set) {
+                                if ($state) {
+                                    $set('line_status', 'promised');
+                                }
+                            }),
                         Forms\Components\TextInput::make('amount')
                             ->required()
                             ->numeric()
@@ -177,6 +182,7 @@ class MonthlySavingTransactionResource extends Resource
                         $record->update([
                             'status' => true,
                             'date' => now(),
+                            'line_status' => 'completed'
                         ]);
 
                         Notification::make()

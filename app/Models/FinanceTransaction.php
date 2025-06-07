@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Enums\LineStatus;
 
 class FinanceTransaction extends Model
 {
@@ -12,6 +13,7 @@ class FinanceTransaction extends Model
         'date',
         'payment_date',
         'status',
+        'line_status',
         'amount',
         'type', // 'income' or 'expense'
         'category_id',
@@ -27,6 +29,7 @@ class FinanceTransaction extends Model
         'payment_date' => 'date',
         'amount' => 'decimal:2',
         'status' => 'boolean',
+        'line_status' => LineStatus::class,
     ];
 
     public function category(): BelongsTo
